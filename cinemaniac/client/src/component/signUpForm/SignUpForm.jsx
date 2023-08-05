@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { FcGoogle } from 'react-icons/fc';
+import { RiCloseCircleLine } from "react-icons/ri";
 import './SignUpForm.scss'
 
-const SignUpForm = () => {
-  const [userForm, setUserForm] = useState('LogIn');
+const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
+
   const [previewPassword, setPreviewPassword] = useState(false);
 
   const [signUpFormData, setSignUpFormData] = useState({
@@ -26,9 +27,6 @@ const SignUpForm = () => {
     setSignUpFormData((prevValue) => ({ ...prevValue, [name]: value }));
   };
 
-  useEffect(() => {
-    console.log('SignUp Details', signUpFormData);
-  }, [signUpFormData]);
 
   const handlePasswordPreviewer = () => {
     setPreviewPassword((prevUser) => !prevUser);
@@ -43,6 +41,8 @@ const SignUpForm = () => {
 
   const validateForm = () => {
     const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!signUpFormData.First_Name) {
       errors.First_Name = 'First Name is required.';
     }
@@ -51,12 +51,14 @@ const SignUpForm = () => {
     }
     if (!signUpFormData.Email) {
       errors.Email = 'Email is required.';
+    } else if (!emailRegex.test(signUpFormData.Email)) {
+      errors.Email = "Invalid email format.";
     }
     if (!signUpFormData.Password) {
       errors.Password = 'Password is required.';
     } else if (!isStrongPassword(signUpFormData.Password)) {
       errors.Password =
-        'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.';
+        "Invalid password format.";
     }
 
     setFormErrors(errors);
@@ -67,16 +69,20 @@ const SignUpForm = () => {
     e.preventDefault();
     const isFormValid = validateForm();
     if (isFormValid) {
-      // Do something with the valid form data
-      console.log('Form submitted:', signUpFormData);
+      console.log("UserName:", signUpFormData.Email);
+      console.log("Password:", signUpFormData.Password);
+      console.log("formdata:", signUpFormData);
     }
   };
 
   return (
-    <div className="body">
+    // <div className="body">
       <form>
       <div className="signUpForm">
       <h3>Registration</h3>
+      <span onClick={() => setShowLogInForm(false)} className="cross_btn">
+              <RiCloseCircleLine />
+            </span>
       <span className="form_user_name">
         <span>
           <h6>First Name</h6>
@@ -136,13 +142,21 @@ const SignUpForm = () => {
           )}
         </span>
       </span>
+      {signUpFormData.Password &&
+              !isStrongPassword(signUpFormData.Password) && (
+                <span className='warnig_msg'>
+                  Password must contain at least 8 characters, one uppercase
+                  letter, one lowercase letter, one number, and one special
+                  character.
+                </span>
+              )}
       <button className="form_logInBtn" onClick={handleSignUpSubmit}>
         SignUp
       </button>
-      <p>
+      <span className="togglebtn">
         Already have an account?{' '}
-        <button onClick={() => setUserForm('LogIn')}>LogIn</button>
-      </p>
+        <button onClick={() => setSignUpForm(false)}>LogIn</button>
+      </span>
       <div className="signUpSection">
         <button className="googleSignUp">
           <FcGoogle />
@@ -151,7 +165,7 @@ const SignUpForm = () => {
       </div>
     </div>
       </form>
-      </div>
+      // </div>
     
   );
 };

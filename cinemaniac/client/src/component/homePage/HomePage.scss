@@ -1,0 +1,191 @@
+.homePage_body {
+  height: calc(100vh - 130px);
+  //   border: solid 1px red;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  .search_bar {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .back_btn{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 1px dotted white;
+      background-color: rgba(203, 199, 199, 0.636);
+      cursor: pointer;
+      height: 100%;
+      width: 20%;
+      color: rgb(255, 255, 255);
+      &:active{
+        background-color: rgba(38, 38, 38, 0.862);
+        color: white;
+      }
+    }
+    input {
+      height: 100%;
+      width: 60%;
+      border-radius: 30px;
+      border: 1px solid white;
+      background-color: rgba(203, 199, 199, 0.636);
+      color: white;
+      font-size: 20px;
+      font-weight: 500;
+      padding-left: 15px;
+    }
+  }
+  .content_box {
+    // border: 1px solid red;
+    margin-top: 40px;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(50, 49, 53, 0.537);
+    border-radius: 20px;
+    .thumbnail_section {
+      width: 40%;
+      // border: 2px solid green;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      .imagebox {
+        width: 60%;
+        height: 100%;
+        border: 3px solid rgba(31, 25, 91, 0.517);
+        margin: 0 auto;
+        border-radius: 5px;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 5px;
+        }
+      }
+      .add_to_playlist_btn {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        button {
+          cursor: pointer;
+          border-radius: 50px;
+          background-color: #dfa909;
+          border: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 30px;
+          width: 120px;
+          gap: 5px;
+          font-weight: 200;
+          &:active {
+            color: white;
+            background-color: #473605;
+          }
+        }
+      }
+    }
+    .movi_details {
+      width: 60%;
+      //   border: 1px solid rebeccapurple;
+      display: flex;
+      flex-direction: column;
+      h4 {
+        font-size: 22px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
+        // border: 1px solid rebeccapurple;
+      }
+      ul {
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        justify-content: space-between;
+        // border: 1px solid rebeccapurple;
+        width: 60%;
+        margin-top: 0;
+        li {
+          list-style: none;
+          height: 20px;
+          padding: 5px;
+          color: #ffffff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #0606074f;
+          border-radius: 3px;
+          gap: 5px;
+          p {
+            font-weight: 700;
+          }
+        }
+      }
+      p {
+        width: 90%;
+        color: white;
+      }
+      .playlist_msg {
+        margin-top: 10px;
+        font-weight: 500;
+        font-size: 18px;
+        color: rgb(255, 255, 255);
+        width: 80%;
+        background-color: #dfa909;
+        padding: 5px;
+        text-transform: uppercase;
+        border-radius: 10px;
+        animation: cartSlideWindow 0.9s ease;
+        animation-fill-mode: forwards;
+      }
+    }
+  }
+  .welcome_screen {
+    // border: 1px solid red;
+    // margin-top: 40px;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+    background-color: rgba(50, 49, 53, 0.537);
+    border-radius: 20px;
+    h1{
+      display: flex;
+      justify-content: center;
+      font-size: 82px;
+      text-transform: uppercase;
+      color: rgb(181, 181, 181);
+      font-weight: 900;
+      margin-top: 70px;
+    }
+    .screen_btn{
+      display: flex;
+      flex-direction: row;
+      gap: 50px;
+      button{
+        width: 200px;
+        height: 40px;
+        font-size: 22px;
+        margin-top: 70px;
+        font-weight: 600;
+        text-transform: uppercase;
+        background-color: rgb(181, 181, 181);
+        cursor: pointer;
+      }
+    }
+  }
+}
+@keyframes cartSlideWindow {
+  0% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

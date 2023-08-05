@@ -1,12 +1,25 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { BiUserCircle } from "react-icons/bi";
 import "./Header.scss";
 import LogInForm from "./../../component/logInForm/LogInForm";
+import AppContext from './../context/AppContext'
+
+
 
 
 const Header = () => {
+
+  const {actionToPerform} = React.useContext(AppContext);
+
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showLogInform, setShowLogInForm] = useState(false);
+
+  useEffect(()=>{
+    if(actionToPerform){
+      setShowLogInForm(actionToPerform);
+      console.log("this is prop",actionToPerform)
+    }
+  },[actionToPerform])
 
   const handleIsUserLoggedIn = () => {
     setIsUserLoggedIn((prevUser) => !prevUser);
@@ -43,7 +56,7 @@ const Header = () => {
           )}
         </div>
       </header>
-      {showLogInform && <LogInForm/>}
+      {showLogInform && <LogInForm setShowLogInForm ={setShowLogInForm} />}
     </>
   );
 };
