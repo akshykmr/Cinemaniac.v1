@@ -13,15 +13,15 @@ const LogInForm = ({ setShowLogInForm }) => {
   const [showSignUpForm, setSignUpForm] = useState(false);
 
   const [logInFormData, setLogInFormData] = useState({
-    Email: "",
-    Password: "",
+    email: "",
+    password: "",
   });
 
-  const [previewPassword, setPreviewPassword] = useState(false);
+  const [previewpassword, setPreviewpassword] = useState(false);
 
   const [formErrors, setFormErrors] = useState({
-    Email: "",
-    Password: "",
+    email: "",
+    password: "",
   });
 
   const handleOnChange = (event) => {
@@ -29,10 +29,10 @@ const LogInForm = ({ setShowLogInForm }) => {
     setLogInFormData((preValue) => ({ ...logInFormData, [name]: value }));
   };
 
-  const handlePasswordPreviewer = () => {
-    setPreviewPassword((prevUser) => !prevUser);
+  const handlepasswordPreviewer = () => {
+    setPreviewpassword((prevUser) => !prevUser);
   };
-  const isStrongPassword = (password) => {
+  const isStrongpassword = (password) => {
     // Define your password complexity requirements here
     const regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -43,16 +43,16 @@ const LogInForm = ({ setShowLogInForm }) => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
-    if (!logInFormData.Email) {
-      errors.Email = "Email is required.";
-    } else if (!emailRegex.test(logInFormData.Email)) {
-      errors.Email = "Invalid email format.";
+    if (!logInFormData.email) {
+      errors.email = "email is required.";
+    } else if (!emailRegex.test(logInFormData.email)) {
+      errors.email = "Invalid email format.";
     }
   
-    if (!logInFormData.Password) {
-      errors.Password = "Password is required.";
-    } else if (!isStrongPassword(logInFormData.Password)) {
-      errors.Password =
+    if (!logInFormData.password) {
+      errors.password = "password is required.";
+    } else if (!isStrongpassword(logInFormData.password)) {
+      errors.password =
         "Invalid password format.";
     }
   
@@ -66,8 +66,8 @@ const LogInForm = ({ setShowLogInForm }) => {
     e.preventDefault();
     const isFormValid = validateForm();
     if (isFormValid) {
-      console.log("UserName:", logInFormData.Email);
-      console.log("Password:", logInFormData.Password);
+      console.log("UserName:", logInFormData.email);
+      console.log("password:", logInFormData.password);
       console.log("formdata:", logInFormData);
     }
   };
@@ -87,41 +87,41 @@ const LogInForm = ({ setShowLogInForm }) => {
               <RiCloseCircleLine />
             </span>
             <span className="form_user_name">
-              <h6>Email</h6>
+              <h6>email</h6>
               <input
                 type="email"
-                value={logInFormData.Email}
-                name="Email"
+                value={logInFormData.email}
+                name="email"
                 required
-                placeholder="Enter Your Email Id"
+                placeholder="Enter Your email Id"
                 onChange={handleOnChange}
               />
-              {formErrors.Email && <p className="error">{formErrors.Email}</p>}
+              {formErrors.email && <p className="error">{formErrors.email}</p>}
             </span>
             <span className="form_user_password">
-              <h6>Password</h6>
+              <h6>password</h6>
               <input
-                type={previewPassword ? "text" : "password"}
-                value={logInFormData.Password}
-                name="Password"
+                type={previewpassword ? "text" : "password"}
+                value={logInFormData.password}
+                name="password"
                 onChange={handleOnChange}
                 required
-                placeholder="Enter Your Password"
+                placeholder="Enter Your password"
               />
-              {formErrors.Password && (
-                <p className="error">{formErrors.Password}</p>
+              {formErrors.password && (
+                <p className="error">{formErrors.password}</p>
               )}
               <span
                 className="password_hider"
-                onClick={handlePasswordPreviewer}
+                onClick={handlepasswordPreviewer}
               >
-                {previewPassword ? <BsEye /> : <BsEyeSlash />}
+                {previewpassword ? <BsEye /> : <BsEyeSlash />}
               </span>
             </span>
-            {logInFormData.Password &&
-              !isStrongPassword(logInFormData.Password) && (
+            {logInFormData.password &&
+              !isStrongpassword(logInFormData.password) && (
                 <p>
-                  Password must contain at least 8 characters, one uppercase
+                  password must contain at least 8 characters, one uppercase
                   letter, one lowercase letter, one number, and one special
                   character.
                 </p>

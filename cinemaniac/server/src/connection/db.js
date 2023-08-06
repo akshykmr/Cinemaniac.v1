@@ -7,7 +7,7 @@ const connect = () => {
   return mongoose
     .connect(dbUrl, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     })
     .then(() => {
       console.log("MongoDB Connected");

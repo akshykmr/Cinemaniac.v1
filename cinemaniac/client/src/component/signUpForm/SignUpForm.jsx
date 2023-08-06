@@ -6,20 +6,20 @@ import './SignUpForm.scss'
 
 const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
 
-  const [previewPassword, setPreviewPassword] = useState(false);
+  const [previewpassword, setPreviewpassword] = useState(false);
 
   const [signUpFormData, setSignUpFormData] = useState({
-    First_Name: '',
-    Last_Name: '',
-    Email: '',
-    Password: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
   });
 
   const [formErrors, setFormErrors] = useState({
-    First_Name: '',
-    Last_Name: '',
-    Email: '',
-    Password: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
   });
 
   const handleOnChange = (event) => {
@@ -28,11 +28,11 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
   };
 
 
-  const handlePasswordPreviewer = () => {
-    setPreviewPassword((prevUser) => !prevUser);
+  const handlepasswordPreviewer = () => {
+    setPreviewpassword((prevUser) => !prevUser);
   };
 
-  const isStrongPassword = (password) => {
+  const isStrongpassword = (password) => {
     // Define your password complexity requirements here
     const regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -43,21 +43,21 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!signUpFormData.First_Name) {
-      errors.First_Name = 'First Name is required.';
+    if (!signUpFormData.firstName) {
+      errors.firstName = 'First Name is required.';
     }
-    if (!signUpFormData.Last_Name) {
-      errors.Last_Name = 'Last Name is required.';
+    if (!signUpFormData.lastName) {
+      errors.lastName = 'Last Name is required.';
     }
-    if (!signUpFormData.Email) {
-      errors.Email = 'Email is required.';
-    } else if (!emailRegex.test(signUpFormData.Email)) {
-      errors.Email = "Invalid email format.";
+    if (!signUpFormData.email) {
+      errors.email = 'email is required.';
+    } else if (!emailRegex.test(signUpFormData.email)) {
+      errors.email = "Invalid email format.";
     }
-    if (!signUpFormData.Password) {
-      errors.Password = 'Password is required.';
-    } else if (!isStrongPassword(signUpFormData.Password)) {
-      errors.Password =
+    if (!signUpFormData.password) {
+      errors.password = 'password is required.';
+    } else if (!isStrongpassword(signUpFormData.password)) {
+      errors.password =
         "Invalid password format.";
     }
 
@@ -69,8 +69,8 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
     e.preventDefault();
     const isFormValid = validateForm();
     if (isFormValid) {
-      console.log("UserName:", signUpFormData.Email);
-      console.log("Password:", signUpFormData.Password);
+      console.log("UserName:", signUpFormData.email);
+      console.log("password:", signUpFormData.password);
       console.log("formdata:", signUpFormData);
     }
   };
@@ -90,11 +90,11 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
             type="text"
             placeholder="Enter Your First Name"
             onChange={handleOnChange}
-            value={signUpFormData.First_Name}
-            name="First_Name"
+            value={signUpFormData.firstName}
+            name="firstName"
           />
-          {formErrors.First_Name && (
-            <p className="error">{formErrors.First_Name}</p>
+          {formErrors.firstName && (
+            <p className="error">{formErrors.firstName}</p>
           )}
         </span>
         <span>
@@ -103,49 +103,49 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
             type="text"
             placeholder="Enter Your Last Name"
             onChange={handleOnChange}
-            value={signUpFormData.Last_Name}
-            name="Last_Name"
+            value={signUpFormData.lastName}
+            name="lastName"
           />
-          {formErrors.Last_Name && (
-            <p className="error">{formErrors.Last_Name}</p>
+          {formErrors.lastName && (
+            <p className="error">{formErrors.lastName}</p>
           )}
         </span>
       </span>
       <span className="form_user_password">
         <span>
-          <h6>Email</h6>
+          <h6>email</h6>
           <input
             type="email"
-            value={signUpFormData.Email}
-            name="Email"
+            value={signUpFormData.email}
+            name="email"
             required
-            placeholder="Enter Your Email Id"
+            placeholder="Enter Your email Id"
             onChange={handleOnChange}
           />
-          {formErrors.Email && <p className="error">{formErrors.Email}</p>}
+          {formErrors.email && <p className="error">{formErrors.email}</p>}
         </span>
         <span>
-          <h6>Password</h6>
+          <h6>password</h6>
           <input
-            type={previewPassword ? 'text' : 'password'}
-            value={signUpFormData.Password}
-            name="Password"
+            type={previewpassword ? 'text' : 'password'}
+            value={signUpFormData.password}
+            name="password"
             onChange={handleOnChange}
             required
-            placeholder="Enter Your Password"
+            placeholder="Enter Your password"
           />
-          <span className="password_hider" onClick={handlePasswordPreviewer}>
-            {previewPassword ? <BsEye /> : <BsEyeSlash />}
+          <span className="password_hider" onClick={handlepasswordPreviewer}>
+            {previewpassword ? <BsEye /> : <BsEyeSlash />}
           </span>
-          {formErrors.Password && (
-            <p className="error">{formErrors.Password}</p>
+          {formErrors.password && (
+            <p className="error">{formErrors.password}</p>
           )}
         </span>
       </span>
-      {signUpFormData.Password &&
-              !isStrongPassword(signUpFormData.Password) && (
+      {signUpFormData.password &&
+              !isStrongpassword(signUpFormData.password) && (
                 <span className='warnig_msg'>
-                  Password must contain at least 8 characters, one uppercase
+                  password must contain at least 8 characters, one uppercase
                   letter, one lowercase letter, one number, and one special
                   character.
                 </span>
