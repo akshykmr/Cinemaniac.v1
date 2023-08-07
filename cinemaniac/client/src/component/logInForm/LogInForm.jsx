@@ -5,6 +5,7 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import "./LogInForm.scss";
 import SignUpForm from "../signUpForm/SignUpForm";
 import AppContext from "../context/AppContext";
+import axios from "axios";
 
 const LogInForm = ({ setShowLogInForm }) => {
 
@@ -33,7 +34,6 @@ const LogInForm = ({ setShowLogInForm }) => {
     setPreviewpassword((prevUser) => !prevUser);
   };
   const isStrongpassword = (password) => {
-    // Define your password complexity requirements here
     const regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
@@ -62,19 +62,47 @@ const LogInForm = ({ setShowLogInForm }) => {
   };
   
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const isFormValid = validateForm();
     if (isFormValid) {
-      console.log("UserName:", logInFormData.email);
-      console.log("password:", logInFormData.password);
-      console.log("formdata:", logInFormData);
+      try {
+        const data = {
+          email: logInFormData.email,
+          password: logInFormData.password,
+        };
+        const response = await axios.post('http://localhost:5000/login', data);
+         console.log("1", response)
+        // if (response.data.message === 'Email Not Found') {
+        //   console.log("Email Not Found");
+        //   // Display error message for email not found
+        // } else if (response.data.message === 'Invalid Password') {
+        //   console.log("Invalid Password");
+        //   // Display error message for invalid password
+        // } else if (response.status === 200) {
+        //   // Login was successful
+        //   localStorage.setItem('@token', JSON.stringify({ token: 'Bearer ' + response.data.token }));
+        //   console.log("Login successful!", response.data);
+        //   setLogInFormData({
+        //     email: "",
+        //     password: "",
+        //   });
+        // } else {
+        //   console.log("Unexpected response:", response.data);
+        //   // Handle other unexpected responses
+        // }
+      } catch (error) {
+        console.error("Error:", error);
+        // Handle other errors if necessary
+      }
     }
   };
+  
+  
 
   const handleLogIn = () =>{
     setShowLogInForm(false);
-    setActionToPerform(false)
+    setActionToPerform(false);
   }
  
   return (

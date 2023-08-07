@@ -3,6 +3,7 @@ import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { FcGoogle } from 'react-icons/fc';
 import { RiCloseCircleLine } from "react-icons/ri";
 import './SignUpForm.scss'
+import axios from 'axios';
 
 const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
 
@@ -33,7 +34,6 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
   };
 
   const isStrongpassword = (password) => {
-    // Define your password complexity requirements here
     const regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
@@ -65,15 +65,33 @@ const SignUpForm = ({setShowLogInForm, setSignUpForm}) => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     const isFormValid = validateForm();
     if (isFormValid) {
-      console.log("UserName:", signUpFormData.email);
-      console.log("password:", signUpFormData.password);
-      console.log("formdata:", signUpFormData);
+      try {
+        const data = {
+          firstName: signUpFormData.firstName,
+          lastName: signUpFormData.lastName,
+          email: signUpFormData.email,
+          password: signUpFormData.password,
+        };
+        const response = await axios.post('http://localhost:5000/register', data);
+  
+        if (response.data.success) {
+          localStorage.setItem('@token', JSON.stringify({ token: 'Bearer ' + response.data.token }));
+          console.log("Signup successful!", response.data);
+        } else {
+          setFormErrors({
+            email: response.data.message === 'Email already exists. Please use a different email.' ? 'Email already exists. Please use a different email.' : '',
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
+  
 
   return (
     // <div className="body">
