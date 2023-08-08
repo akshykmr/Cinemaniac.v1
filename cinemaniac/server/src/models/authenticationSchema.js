@@ -9,25 +9,16 @@ const authenticationSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  tokens: [{
-    token:{
-      type: String, required: true,
-    }
-  }],
   playlists: [
     {
       name: { type: String, required: true },
-      isPublic: { type: Boolean, default: true },
-      movies: [{ type: String }],
     },
   ],
 });
 
 authenticationSchema.methods['generateAuthToken'] = async function(){
   try {
-    const token = jwt.sign({_id:this._id.toString()},JWT_SECRET_KEY);
-    this.tokens = this.tokens.concat({token});
-    await this.save();
+    const token = jwt.sign({_id:this._id},JWT_SECRET_KEY);
     return token;
   }
   catch(error){

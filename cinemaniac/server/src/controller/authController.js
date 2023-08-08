@@ -9,11 +9,13 @@ const bcrypt = require('bcrypt');
 const createUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+
         const existingUser = await User.findOne({ email });
+
         if (existingUser) {
-          return res.status(400).json({ error: 'Email already exists. Please use a different email.' });
+           res.json({success: false, message: 'Email already exists, please choose another email'});
         }
-        console.log("working 1")
+        else {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({
             firstName:req.body.firstName,
@@ -21,11 +23,10 @@ const createUser = async (req, res) => {
             email    :req.body.email,
             password :hashedPassword ,
         })
-        console.log("working 2",user)
         const token = await user.generateAuthToken();
-        console.log("working 3",token)
         const response = await user.save();
-        res.json({ message: 'User registered successfully!', response });
+        res.json({success: true, message: 'User successfully registered',response,token});
+    }
       } catch (error) {
         res.status(500).json({ error: 'An error occurred while registering the user.' });
       }
@@ -38,50 +39,73 @@ const logInUser = async (req, res) => {
         const { email, password } = req.body;
     
         const user = await User.findOne({ email });
-    
+
         if (!user) {
             console.log("Email Not Found");
-            return res.status(404).json({ message: 'Email Not Found' });
+            res.json({ success: false, message: 'Email Not Found' });
+          } else {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+                console.log("Invalid Password");
+                res.json({ success: false, message: 'Invalid Password' });
+              } 
+              else {
+              const token = await user.generateAuthToken();
+                res.json( { success: true, message: 'Login successful!', user, token });
+              }
           }
+        } catch (error) {
+          res.status(500).json({ error: 'An error occurred while logging in.' });
+        }
+      };
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        if (!isPasswordValid) {
-            console.log("Invalid Password");
-            return res.status(401).json({ message: 'Invalid Password' });
-          }
-        // const token = await user.generateAuthToken();
-
-        res.json({ status:200, message: 'Login successful!', user });
+//////////////////////////UPDATA THE PLYALIST
+  const dataTransmitter = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+          res.status(404).json({ success: false, message: 'User not found' });
+        } else {
+          res.json({
+            success: true,
+            data: {
+              firstName: user.firstName,
+              lastName: user.lastName,
+              playlist: user.playlists,
+            },
+          });
+        }
       } catch (error) {
-        res.status(500).json({ error: 'An error occurred while logging in.' });
+        res.status(500).json({ success: false, message: 'An error occurred while retrieving the data' });
       }
     };
 
-
-
-  const updatePlaylist = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const user = await User.findOne({ email });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
+    const updatePlaylist = async (req, res) => {
+      try {
+        const user = await User.findById(req.user._id); 
+        const movieName = req.body.movieName;
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+    } else {
+      const existingMovie = user.playlists.find(movie => movie.name === movieName);
+      if (existingMovie) {
+        res.json({ success: true, message: 'Movie already exists in the playlist' });
+      } else {
+        user.playlists.push({ name: movieName });
+        await user.save();
+        res.json({ success: true, message: 'Playlist updated' });
       }
-  
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ error: 'Invalid password.' });
-      }
-  
-      res.json({ message: 'Login successful!', user });
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while logging in.' });
     }
-  };
+        } catch (error) {
+          res.status(500).json({ success: false, message: 'An error occurred while retrieving the data' });
+        }
+      };
 
 module.exports = {
   createUser,
   logInUser,
+  dataTransmitter,
   updatePlaylist,
 };
+

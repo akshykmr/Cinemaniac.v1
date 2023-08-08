@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.scss";
-import IMG from "./../../assets/1431137.jpg";
 import { AiFillStar } from "react-icons/ai";
 import { BsArrowLeftSquare } from "react-icons/bs";
 import { BiTimeFive } from "react-icons/bi";
@@ -9,9 +8,13 @@ import AppContext from "./../context/AppContext";
 import axios from "axios";
 
 const HomePage = () => {
-  const { propsAsAction } = React.useContext(AppContext);
+
+  const token = localStorage.getItem("token");
+
+  const { propsAsAction ,actionToPerform } = React.useContext(AppContext);
 
   const [playlist, setPlayList] = useState(false);
+  const [playlistMsg, setPlaylistMsg] = useState();
   const [welcomeScreen, setWelcomeScreen] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,15 +24,36 @@ const HomePage = () => {
 
   const [moviesData, setMoviesData] = useState();
 
-  const handleAddToPlaylist = () => {
-    setPlayList(true);
-    setTimeout(() => {
-      setPlayList(false);
-    }, 3000);
+  const handleAddToPlaylist = async (movieName) => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      console.log("token", headers)
+      const formData = new FormData();
+      formData.append("movieName", movieName);
+      
+      const response = await axios.put('http://localhost:5000/update', { movieName }, { headers });
+      if (response.data.success) {
+        setPlayList(true);
+        setTimeout(() => {
+          setPlayList(false);
+        }, 3000);
+        console.log(response.data.message);
+        setPlaylistMsg(response.data.message)
+      } else {
+        console.log(response.data.message);
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleLogIn = () => {
-    propsAsAction(true);
+  const handleLogInAppearance = () => {   //// THIS WILL TRIGGER THE LOG IN PAGE AND LOG IN / SIGNUP PAGE WILL APPEAR ON  HOMEPAGE
+    propsAsAction({
+      logInPageAppearance : true, 
+      data : null,
+      isLoggedin : null,
+    });  
   };
 
   const handleSearch = () => {
@@ -61,9 +85,6 @@ const HomePage = () => {
     }
   }, [searchTerm]);
 
-  useEffect(() => {
-    console.log("searchResults:", searchResults);
-  }, [searchResults]);
 
   const handleMovieSelect = async (title) => {
     try {
@@ -86,6 +107,14 @@ const HomePage = () => {
     setLoading(!moviesData);
   }, [moviesData]);
 
+  useEffect(()=>{
+    if(actionToPerform.isLoggedin){
+      setWelcomeScreen(false);
+    } else if (!actionToPerform.isLoggedin){
+      setWelcomeScreen(true);
+    }
+  },[actionToPerform]);
+
   return (
     <div className="homePage_body">
       {welcomeScreen ? (
@@ -95,7 +124,8 @@ const HomePage = () => {
             <button onClick={() => setWelcomeScreen(false)}>
               Search Movies
             </button>
-            <button onClick={handleLogIn}>LogIn</button>
+            {!actionToPerform.isLoggedin && <button onClick={handleLogInAppearance}>LogIn</button> }
+            
           </div>
         </div>
       ) : (
@@ -130,15 +160,15 @@ const HomePage = () => {
             {loading ? (
               <div className="blank_skaleton">
                 <h1>Empty Results</h1>
-                <div class="hourglassBackground">
-                  <div class="hourglassContainer">
-                    <div class="hourglassCurves"></div>
-                    <div class="hourglassCapTop"></div>
-                    <div class="hourglassGlassTop"></div>
-                    <div class="hourglassSand"></div>
-                    <div class="hourglassSandStream"></div>
-                    <div class="hourglassCapBottom"></div>
-                    <div class="hourglassGlass"></div>
+                <div className="hourglassBackground">
+                  <div className="hourglassContainer">
+                    <div className="hourglassCurves"></div>
+                    <div className="hourglassCapTop"></div>
+                    <div className="hourglassGlassTop"></div>
+                    <div className="hourglassSand"></div>
+                    <div className="hourglassSandStream"></div>
+                    <div className="hourglassCapBottom"></div>
+                    <div className="hourglassGlass"></div>
                   </div>
                 </div>
               </div>
@@ -149,7 +179,7 @@ const HomePage = () => {
                     <img src={moviesData?.Poster} alt="" />
                   </div>
                   <div className="add_to_playlist_btn">
-                    <button onClick={handleAddToPlaylist}>
+                    <button onClick={()=>handleAddToPlaylist(moviesData?.Title)}>
                       <AiFillStar /> Add to Playlist
                     </button>
                   </div>
@@ -185,7 +215,7 @@ const HomePage = () => {
                   </ul>
                   {playlist && (
                     <span className="playlist_msg">
-                      Added in Playlist Successfully
+                      {playlistMsg}
                     </span>
                   )}
                 </div>

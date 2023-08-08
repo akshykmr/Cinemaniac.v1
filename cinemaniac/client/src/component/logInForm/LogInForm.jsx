@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -9,7 +9,9 @@ import axios from "axios";
 
 const LogInForm = ({ setShowLogInForm }) => {
 
-  const {setActionToPerform} = React.useContext(AppContext);
+  const token = localStorage.getItem("token");
+
+  const { propsAsAction, actionToPerform } = React.useContext(AppContext);
 
   const [showSignUpForm, setSignUpForm] = useState(false);
 
@@ -24,6 +26,8 @@ const LogInForm = ({ setShowLogInForm }) => {
     email: "",
     password: "",
   });
+
+  const [logInWatcher, setLogInWatcher] = useState(true);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -42,25 +46,23 @@ const LogInForm = ({ setShowLogInForm }) => {
   const validateForm = () => {
     const errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
     if (!logInFormData.email) {
       errors.email = "email is required.";
     } else if (!emailRegex.test(logInFormData.email)) {
       errors.email = "Invalid email format.";
     }
-  
+
     if (!logInFormData.password) {
       errors.password = "password is required.";
     } else if (!isStrongpassword(logInFormData.password)) {
-      errors.password =
-        "Invalid password format.";
+      errors.password = "Invalid password format.";
     }
-  
+
     setFormErrors(errors);
-  
+
     return Object.keys(errors).length === 0;
   };
-  
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -71,47 +73,110 @@ const LogInForm = ({ setShowLogInForm }) => {
           email: logInFormData.email,
           password: logInFormData.password,
         };
-        const response = await axios.post('http://localhost:5000/login', data);
-         console.log("1", response)
-        // if (response.data.message === 'Email Not Found') {
-        //   console.log("Email Not Found");
-        //   // Display error message for email not found
-        // } else if (response.data.message === 'Invalid Password') {
-        //   console.log("Invalid Password");
-        //   // Display error message for invalid password
-        // } else if (response.status === 200) {
-        //   // Login was successful
-        //   localStorage.setItem('@token', JSON.stringify({ token: 'Bearer ' + response.data.token }));
-        //   console.log("Login successful!", response.data);
-        //   setLogInFormData({
-        //     email: "",
-        //     password: "",
-        //   });
-        // } else {
-        //   console.log("Unexpected response:", response.data);
-        //   // Handle other unexpected responses
-        // }
+        const response = await axios.post("http://localhost:5000/login", data);
+
+        if (response.data.success) {
+          localStorage.setItem("token", response.data.token);
+          console.log("Login successful!", response.data, response.data.token);
+          setLogInFormData({
+            email: "",
+            password: "",
+          });
+          setLogInWatcher(false);
+        } else {
+          console.log(response.data.message);
+          setFormErrors({
+            email:
+              response.data.message === "Email Not Found"
+                ? "Email Not Found"
+                : "",
+            password:
+              response.data.message === "Invalid Password"
+                ? "Invalid Password"
+                : "",
+          });
+        }
       } catch (error) {
         console.error("Error:", error);
-        // Handle other errors if necessary
       }
     }
   };
-  
-  
 
-  const handleLogIn = () =>{
-    setShowLogInForm(false);
-    setActionToPerform(false);
-  }
- 
+
+
+
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    console.log("Logout successful!");
+  };
+
+  useEffect(() => {
+    if (actionToPerform.isLoggedin === false) {
+      handleLogout();
+    }
+  }, [actionToPerform]);
+
+
+
+
+
+  const handleGetData = async () => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      const response = await axios.get("http://localhost:5000/protected", {
+        headers,
+      });
+      console.log(response);
+      console.log(response.data.data);
+      if (response.data.success) {
+        setShowLogInForm(false); //// IT WILL SET THE STATE FALSE FOR LOG IN FORM SO THAT IN NEXT CALL IT CAN BE CALLED AGAIN
+        propsAsAction({
+          data: response.data.data, /// SENDING DATA TO HEADER FOR USER PROFILE
+          isLoggedin: true, //// HANDLING WELCOME SCREEN APPEARANCE
+        });
+        setShowLogInForm(false);
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+
+
+  useEffect(() => {
+    if (logInWatcher === false) {
+      handleGetData();
+      setLogInWatcher(true);
+    } else if(actionToPerform.refreshPlayList === true){
+      handleGetData();
+      console.log("refresh")
+    }
+  }, [logInWatcher,actionToPerform]);
+
+
+
+  const handleCloseLogInPage = () => {
+    setShowLogInForm(false); ///// CLOSING LOG IN FOR API CALL 
+    // propsAsAction({
+    //   logInPageAppearance: false, ///// CLOSING LOG IN FORM IN HEADER CALL
+    //   data: null,
+    //   showLogInPage: null,
+    // });
+  };
+
   return (
     <div className="body">
       {!showSignUpForm ? (
         <form>
           <div className="logInForm">
             <h3>Log In </h3>
-            <span onClick={handleLogIn} className="cross_btn">
+            <span onClick={handleCloseLogInPage} className="cross_btn">
               <RiCloseCircleLine />
             </span>
             <span className="form_user_name">
@@ -176,7 +241,10 @@ const LogInForm = ({ setShowLogInForm }) => {
           </div>
         </form>
       ) : (
-        <SignUpForm setSignUpForm={setSignUpForm} setShowLogInForm ={setShowLogInForm} />
+        <SignUpForm
+          setSignUpForm={setSignUpForm}
+          setShowLogInForm={setShowLogInForm} setLogInWatcher={setLogInWatcher}
+        />
       )}{" "}
     </div>
   );

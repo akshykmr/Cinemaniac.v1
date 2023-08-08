@@ -1,62 +1,79 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import "./Header.scss";
 import LogInForm from "./../../component/logInForm/LogInForm";
-import AppContext from './../context/AppContext'
-
-
-
+import AppContext from "./../context/AppContext";
+import Playlist from "../playList/Playlist";
 
 const Header = () => {
-
-  const {actionToPerform} = React.useContext(AppContext);
+  const { actionToPerform, propsAsAction } = React.useContext(AppContext);
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showLogInform, setShowLogInForm] = useState(false);
+  const [userData, setUserData] = useState();
+  const [displayPlayList, setDisplayPlayList] = useState(false);
 
-  useEffect(()=>{
-    if(actionToPerform){
-      setShowLogInForm(actionToPerform);
-      console.log("this is prop",actionToPerform)
+  useEffect(() => {
+    if (actionToPerform.logInPageAppearance === true) {
+      setShowLogInForm(true);
     }
-  },[actionToPerform])
+  }, [actionToPerform]);
 
-  const handleIsUserLoggedIn = () => {
-    setIsUserLoggedIn((prevUser) => !prevUser);
+  useEffect(() => {
+    if (actionToPerform.isLoggedin) {
+      setIsUserLoggedIn(true);
+      setUserData(actionToPerform.data);
+    }
+  }, [actionToPerform]);
+
+  const handleLogOutUser = () => {
+       propsAsAction({
+      //  logInPageAppearance: true, 
+       data: null,
+       isLoggedin: false,
+       });
+       setUserData("");
+       setIsUserLoggedIn(false);
+       setShowLogInForm(true);
   };
 
-  const handleLogInPageAppearance = () =>{
+  const handleLogInPageAppearance = () => {
     setShowLogInForm(true);
+  };
+
+  const handleDisplayPlayList = () =>{
+    setDisplayPlayList(true); 
   }
 
   return (
     <>
       <header>
         <div className="header_items">
-          <div className="logo">
-            Cinemaniac <button onClick={handleIsUserLoggedIn}>L</button>
-          </div>
+          <div className="logo">Cinemaniac</div>
           {!isUserLoggedIn ? (
-            <button onClick={handleLogInPageAppearance} className="logInBtn">LogIn</button>
+            <button onClick={handleLogInPageAppearance} className="logInBtn">
+              LogIn
+            </button>
           ) : (
             <div className="user">
               <div className="userProfile">
                 <span className="user_icon">
                   <BiUserCircle />
                 </span>
-                <span className="user_name">Akshay </span>
+                <span className="user_name">{userData.firstName} </span>
               </div>
               <div className="UserDropdown">
                 <ul>
-                  <li>Play List</li>
-                  <li>Log Out</li>
+                  <li onClick={handleDisplayPlayList}>Play List</li>
+                  <li onClick={handleLogOutUser}>Log Out</li>
                 </ul>
               </div>
             </div>
           )}
         </div>
       </header>
-      {showLogInform && <LogInForm setShowLogInForm ={setShowLogInForm} />}
+      {showLogInform && <LogInForm setShowLogInForm={setShowLogInForm} />}
+      {displayPlayList && <Playlist setDisplayPlayList={setDisplayPlayList} />}
     </>
   );
 };

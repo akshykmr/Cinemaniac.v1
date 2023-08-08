@@ -8,14 +8,14 @@ import AppContext from "./component/context/AppContext";
 
 function App() {
  
-  const [actionToPerform, setActionToPerform] = React.useState(null);
+  const [actionToPerform, setActionToPerform] = React.useState("null");
 
   const propsAsAction =(result)=>{
     setActionToPerform(result);
   }
 
   return (
-    <AppContext.Provider value={{propsAsAction, actionToPerform, setActionToPerform}}>
+    <AppContext.Provider value={{propsAsAction, actionToPerform}}>
     <Header/>
     <HomePage/>
     </AppContext.Provider>
