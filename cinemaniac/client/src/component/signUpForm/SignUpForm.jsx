@@ -7,6 +7,9 @@ import axios from "axios";
 import AppContext from "../context/AppContext";
 
 const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
+
+  const serverUrl = process.env.REACT_APP_BASE_URL;
+
   const { propsAsAction, actionToPerform } = React.useContext(AppContext);
 
   const [previewpassword, setPreviewpassword] = useState(false);
@@ -77,7 +80,7 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
           password: signUpFormData.password,
         };
         const response = await axios.post(
-          "http://localhost:5000/register",
+          `${serverUrl}/register`,
           data
         );
 

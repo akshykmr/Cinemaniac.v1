@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { RiCloseCircleLine } from "react-icons/ri";
 import "./LogInForm.scss";
@@ -9,7 +8,10 @@ import axios from "axios";
 
 const LogInForm = ({ setShowLogInForm }) => {
 
-  const token = localStorage.getItem("token");
+  const serverUrl = process.env.REACT_APP_BASE_URL;
+
+
+  let token = localStorage.getItem("token");
 
   const { propsAsAction, actionToPerform } = React.useContext(AppContext);
 
@@ -73,11 +75,11 @@ const LogInForm = ({ setShowLogInForm }) => {
           email: logInFormData.email,
           password: logInFormData.password,
         };
-        const response = await axios.post("http://localhost:5000/login", data);
+        const response = await axios.post(`${serverUrl}/login`, data);
 
         if (response.data.success) {
           localStorage.setItem("token", response.data.token);
-          console.log("Login successful!", response.data, response.data.token);
+          // console.log("Login successful!", response.data, response.data.token);
           setLogInFormData({
             email: "",
             password: "",
@@ -109,6 +111,7 @@ const LogInForm = ({ setShowLogInForm }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+     token = null;
     console.log("Logout successful!");
   };
 
@@ -125,7 +128,7 @@ const LogInForm = ({ setShowLogInForm }) => {
   const handleGetData = async () => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get("http://localhost:5000/protected", {
+      const response = await axios.get(`${serverUrl}/protected`, {
         headers,
       });
       console.log(response);
@@ -150,7 +153,7 @@ const LogInForm = ({ setShowLogInForm }) => {
 
 
   useEffect(() => {
-    if (logInWatcher === false) {
+    if (logInWatcher === false || token) {
       handleGetData();
       setLogInWatcher(true);
     } else if(actionToPerform.refreshPlayList === true){
@@ -158,8 +161,6 @@ const LogInForm = ({ setShowLogInForm }) => {
       console.log("refresh")
     }
   }, [logInWatcher,actionToPerform]);
-
-
 
   const handleCloseLogInPage = () => {
     setShowLogInForm(false); ///// CLOSING LOG IN FOR API CALL 

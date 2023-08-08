@@ -9,6 +9,10 @@ import axios from "axios";
 
 const HomePage = () => {
 
+  const omdbBaseUrl = `${process.env.REACT_APP_OMDB_BASE_URL}?apikey=${process.env.REACT_APP_OMDB_API_KEY}`;
+
+  const serverUrl = process.env.REACT_APP_BASE_URL;
+
   const token = localStorage.getItem("token");
 
   const { propsAsAction ,actionToPerform } = React.useContext(AppContext);
@@ -31,7 +35,7 @@ const HomePage = () => {
       const formData = new FormData();
       formData.append("movieName", movieName);
       
-      const response = await axios.put('http://localhost:5000/update', { movieName }, { headers });
+      const response = await axios.put(`${serverUrl}/update`, { movieName }, { headers });
       if (response.data.success) {
         setPlayList(true);
         setTimeout(() => {
@@ -59,7 +63,7 @@ const HomePage = () => {
   const handleSearch = () => {
     if (searchTerm.length >= 4) {
       axios
-        .get(`https://www.omdbapi.com/?apikey=aedc4b94&s=${searchTerm}`)
+        .get(`${omdbBaseUrl}&s=${searchTerm}`)
         .then((response) => {
           if (response.data && response.data.Search) {
             const movies = response.data.Search;
@@ -89,7 +93,7 @@ const HomePage = () => {
   const handleMovieSelect = async (title) => {
     try {
       const response = await axios.get(
-        `https://www.omdbapi.com/?apikey=aedc4b94&t=${title}`
+        `${omdbBaseUrl}&t=${title}`
       );
       const movieData = response.data;
       console.log("Selected Movie Data:", movieData, response.status);
@@ -191,7 +195,7 @@ const HomePage = () => {
                   <ul>
                     <li>
                       <AiFillStar />
-                      {moviesData?.Ratings[0].Value}
+                      {moviesData?.Ratings[0]?.Value || "NA"}
                     </li>
                     <li>
                       <p>IMDB</p> {moviesData?.imdbRating}
