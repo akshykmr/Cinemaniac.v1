@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./Playlist.scss";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { MdOutlineRefresh } from "react-icons/md";
 
 import AppContext from "../context/AppContext";
 
 const Playlist = ({ setDisplayPlayList }) => {
-  const { actionToPerform, propsAsAction } = React.useContext(AppContext);
+  const { actionToPerform } = React.useContext(AppContext);
 
   const [playlist, setPlaylist] = useState();
 
@@ -19,8 +18,6 @@ const Playlist = ({ setDisplayPlayList }) => {
   const handleClosePlaylist = () => {
     setDisplayPlayList(false);
   };
-
- 
 
   return (
     <div className="playListbody">

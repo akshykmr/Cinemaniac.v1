@@ -192,12 +192,12 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
           Already have an account?{" "}
           <button onClick={() => setSignUpForm(false)}>LogIn</button>
         </span>
-        <div className="signUpSection">
+        {/* <div className="signUpSection">
           <button className="googleSignUp">
             <FcGoogle />
             Continue With Google
           </button>
-        </div>
+        </div> */}
       </div>
     </form>
     // </div>

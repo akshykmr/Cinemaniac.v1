@@ -178,11 +178,11 @@ const HomePage = () => {
                   <div className="imagebox">
                     <img src={moviesData?.Poster} alt="" />
                   </div>
-                  <div className="add_to_playlist_btn">
+                  {actionToPerform.isLoggedin && <div className="add_to_playlist_btn">
                     <button onClick={()=>handleAddToPlaylist(moviesData?.Title)}>
                       <AiFillStar /> Add to Playlist
                     </button>
-                  </div>
+                  </div> }
                 </div>
                 <div className="movi_details">
                   <h4>

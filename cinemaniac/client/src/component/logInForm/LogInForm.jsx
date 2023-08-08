@@ -232,12 +232,12 @@ const LogInForm = ({ setShowLogInForm }) => {
                 SignUp
               </button>
             </span>
-            <div className="signUpSection">
+            {/* <div className="signUpSection">
               <button className="googleSignUp">
                 <FcGoogle />
                 Continue With Google
               </button>
-            </div>
+            </div> */}
           </div>
         </form>
       ) : (
