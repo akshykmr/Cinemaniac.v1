@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controller/authController');
-const jwt = require('jsonwebtoken');
 const { verifyToken } = require('./../controller/verifyauth');
 
 router.post('/register', authController.createUser);
 
 router.post('/login', authController.logInUser);
+
+router.post('/googlelogin', authController.logInWithGoogle);
 
 router.get('/protected', verifyToken, authController.dataTransmitter);
 

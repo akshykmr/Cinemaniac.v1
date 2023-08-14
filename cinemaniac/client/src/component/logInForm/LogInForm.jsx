@@ -5,15 +5,13 @@ import "./LogInForm.scss";
 import SignUpForm from "../signUpForm/SignUpForm";
 import AppContext from "../context/AppContext";
 import axios from "axios";
+import { LogInBtn } from "../signInWithGoogle/LogInBtn";
+import ForgotPass from "../forgotPass/ForgotPass";
 
 const LogInForm = ({ setShowLogInForm }) => {
-
   const serverUrl = process.env.REACT_APP_BASE_URL;
 
-
-  let token = localStorage.getItem("token");
-
-  const { propsAsAction, actionToPerform } = React.useContext(AppContext);
+  const { propsAsAction } = React.useContext(AppContext);
 
   const [showSignUpForm, setSignUpForm] = useState(false);
 
@@ -29,7 +27,6 @@ const LogInForm = ({ setShowLogInForm }) => {
     password: "",
   });
 
-  const [logInWatcher, setLogInWatcher] = useState(true);
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -79,12 +76,15 @@ const LogInForm = ({ setShowLogInForm }) => {
 
         if (response.data.success) {
           localStorage.setItem("token", response.data.token);
-          // console.log("Login successful!", response.data, response.data.token);
           setLogInFormData({
             email: "",
             password: "",
           });
-          setLogInWatcher(false);
+          propsAsAction({
+            isUserLoggedIn: true,
+          });
+          console.log("Login successful!", response.data);
+          console.log(response.data.message);
         } else {
           console.log(response.data.message);
           setFormErrors({
@@ -104,71 +104,8 @@ const LogInForm = ({ setShowLogInForm }) => {
     }
   };
 
-
-
-
-
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-     token = null;
-    console.log("Logout successful!");
-  };
-
-  useEffect(() => {
-    if (actionToPerform.isLoggedin === false) {
-      handleLogout();
-    }
-  }, [actionToPerform]);
-
-
-
-
-
-  const handleGetData = async () => {
-    try {
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get(`${serverUrl}/protected`, {
-        headers,
-      });
-      console.log(response);
-      console.log(response.data.data);
-      if (response.data.success) {
-        setShowLogInForm(false); //// IT WILL SET THE STATE FALSE FOR LOG IN FORM SO THAT IN NEXT CALL IT CAN BE CALLED AGAIN
-        propsAsAction({
-          data: response.data.data, /// SENDING DATA TO HEADER FOR USER PROFILE
-          isLoggedin: true, //// HANDLING WELCOME SCREEN APPEARANCE
-        });
-        setShowLogInForm(false);
-      } else {
-        console.log(response.data.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
-
-
-
-  useEffect(() => {
-    if (logInWatcher === false || token) {
-      handleGetData();
-      setLogInWatcher(true);
-    } else if(actionToPerform.refreshPlayList === true){
-      handleGetData();
-      console.log("refresh")
-    }
-  }, [logInWatcher,actionToPerform]);
-
   const handleCloseLogInPage = () => {
-    setShowLogInForm(false); ///// CLOSING LOG IN FOR API CALL 
-    // propsAsAction({
-    //   logInPageAppearance: false, ///// CLOSING LOG IN FORM IN HEADER CALL
-    //   data: null,
-    //   showLogInPage: null,
-    // });
+    setShowLogInForm(false); ///// CLOSING LOG IN FOR API CALL
   };
 
   return (
@@ -233,20 +170,25 @@ const LogInForm = ({ setShowLogInForm }) => {
                 SignUp
               </button>
             </span>
-            {/* <div className="signUpSection">
-              <button className="googleSignUp">
-                <FcGoogle />
-                Continue With Google
+            <span className="accountreset">
+              <button onClick={() => setSignUpForm("forgot")} type="btn">
+                Forgot Password
               </button>
-            </div> */}
+            </span>
+            <LogInBtn />
           </div>
         </form>
+      ) : showSignUpForm === "forgot" ? (
+        <ForgotPass
+        setSignUpForm={setSignUpForm}
+          setShowLogInForm={setShowLogInForm}
+        />
       ) : (
         <SignUpForm
           setSignUpForm={setSignUpForm}
-          setShowLogInForm={setShowLogInForm} setLogInWatcher={setLogInWatcher}
+          setShowLogInForm={setShowLogInForm}
         />
-      )}{" "}
+      )}
     </div>
   );
 };

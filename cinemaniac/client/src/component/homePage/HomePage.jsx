@@ -8,20 +8,24 @@ import AppContext from "./../context/AppContext";
 import axios from "axios";
 
 const HomePage = () => {
-
   const omdbBaseUrl = `${process.env.REACT_APP_OMDB_BASE_URL}?apikey=${process.env.REACT_APP_OMDB_API_KEY}`;
 
   const serverUrl = process.env.REACT_APP_BASE_URL;
 
   const token = localStorage.getItem("token");
+  const movie = localStorage.getItem("movies");
 
-  const { propsAsAction ,actionToPerform } = React.useContext(AppContext);
+
+  const { propsAsAction, actionToPerform } = React.useContext(AppContext);
 
   const [playlist, setPlayList] = useState(false);
+
   const [playlistMsg, setPlaylistMsg] = useState();
+
   const [welcomeScreen, setWelcomeScreen] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
+
   const [searchResults, setSearchResults] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -31,33 +35,35 @@ const HomePage = () => {
   const handleAddToPlaylist = async (movieName) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      console.log("token", headers)
+      console.log("token", headers);
       const formData = new FormData();
       formData.append("movieName", movieName);
-      
-      const response = await axios.put(`${serverUrl}/update`, { movieName }, { headers });
+
+      const response = await axios.put(
+        `${serverUrl}/update`,
+        { movieName },
+        { headers }
+      );
       if (response.data.success) {
         setPlayList(true);
         setTimeout(() => {
           setPlayList(false);
         }, 3000);
         console.log(response.data.message);
-        setPlaylistMsg(response.data.message)
+        setPlaylistMsg(response.data.message);
       } else {
         console.log(response.data.message);
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
 
-  const handleLogInAppearance = () => {   //// THIS WILL TRIGGER THE LOG IN PAGE AND LOG IN / SIGNUP PAGE WILL APPEAR ON  HOMEPAGE
+  const handleLogInAppearance = () => {
+    //// THIS WILL TRIGGER THE LOG IN PAGE AND LOG IN / SIGNUP PAGE WILL APPEAR ON  HOMEPAGE
     propsAsAction({
-      logInPageAppearance : true, 
-      data : null,
-      isLoggedin : null,
-    });  
+      logInPageAppearance: true,
+    });
   };
 
   const handleSearch = () => {
@@ -89,18 +95,16 @@ const HomePage = () => {
     }
   }, [searchTerm]);
 
-
   const handleMovieSelect = async (title) => {
     try {
-      const response = await axios.get(
-        `${omdbBaseUrl}&t=${title}`
-      );
+      const response = await axios.get(`${omdbBaseUrl}&t=${title}`);
       const movieData = response.data;
       console.log("Selected Movie Data:", movieData, response.status);
       if (response.status === 200) {
         setSearchTerm("");
         setSearchResults([]);
         setMoviesData(movieData);
+        localStorage.setItem("movies", title);
       }
     } catch (error) {
       console.error("Error fetching movie details:", error);
@@ -111,13 +115,21 @@ const HomePage = () => {
     setLoading(!moviesData);
   }, [moviesData]);
 
-  useEffect(()=>{
-    if(actionToPerform.isLoggedin){
+  useEffect(() => {
+    if (actionToPerform.isLoggedin) {
       setWelcomeScreen(false);
-    } else if (!actionToPerform.isLoggedin){
+    } else if (!actionToPerform.isLoggedin) {
       setWelcomeScreen(true);
     }
-  },[actionToPerform]);
+  }, [actionToPerform]);
+
+
+  useEffect(()=>{
+    if(movie){
+      handleMovieSelect(movie)
+    }
+  },[])
+
 
   return (
     <div className="homePage_body">
@@ -128,8 +140,9 @@ const HomePage = () => {
             <button onClick={() => setWelcomeScreen(false)}>
               Search Movies
             </button>
-            {!actionToPerform.isLoggedin && <button onClick={handleLogInAppearance}>LogIn</button> }
-            
+            {!actionToPerform.isLoggedin && (
+              <button onClick={handleLogInAppearance}>LogIn</button>
+            )}
           </div>
         </div>
       ) : (
@@ -182,11 +195,15 @@ const HomePage = () => {
                   <div className="imagebox">
                     <img src={moviesData?.Poster} alt="" />
                   </div>
-                  {actionToPerform.isLoggedin && <div className="add_to_playlist_btn">
-                    <button onClick={()=>handleAddToPlaylist(moviesData?.Title)}>
-                      <AiFillStar /> Add to Playlist
-                    </button>
-                  </div> }
+                  {actionToPerform.isLoggedin && (
+                    <div className="add_to_playlist_btn">
+                      <button
+                        onClick={() => handleAddToPlaylist(moviesData?.Title)}
+                      >
+                        <AiFillStar /> Add to Playlist
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="movi_details">
                   <h4>
@@ -215,12 +232,9 @@ const HomePage = () => {
                   <ul>
                     <li>Language : {moviesData?.Language}</li>
                     <li>Genre : {moviesData?.Genre}</li>
-                    
                   </ul>
                   {playlist && (
-                    <span className="playlist_msg">
-                      {playlistMsg}
-                    </span>
+                    <span className="playlist_msg">{playlistMsg}</span>
                   )}
                 </div>
               </div>

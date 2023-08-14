@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
 import { RiCloseCircleLine } from "react-icons/ri";
 import "./SignUpForm.scss";
 import axios from "axios";
 import AppContext from "../context/AppContext";
+import { LogInBtn } from "../signInWithGoogle/LogInBtn";
 
-const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
-
+const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
   const serverUrl = process.env.REACT_APP_BASE_URL;
 
-  const { propsAsAction, actionToPerform } = React.useContext(AppContext);
+  const { propsAsAction } = React.useContext(AppContext);
 
   const [previewpassword, setPreviewpassword] = useState(false);
 
@@ -19,6 +18,8 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
     lastName: "",
     email: "",
     password: "",
+    mobileNo: "",
+    profilePic: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -26,12 +27,20 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
     lastName: "",
     email: "",
     password: "",
+    mobileNo: "",
+    profilePic: "",
   });
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setSignUpFormData((prevValue) => ({ ...prevValue, [name]: value }));
   };
+
+  const handleFileChange = (event) => {
+    setSignUpFormData({ ...signUpFormData, profilePic: event.target.files[0] });
+    console.log(event.target.files[0]);
+  };
+  console.log("signUpFormData", signUpFormData);
 
   const handlepasswordPreviewer = () => {
     setPreviewpassword((prevUser) => !prevUser);
@@ -53,6 +62,12 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
     if (!signUpFormData.lastName) {
       errors.lastName = "Last Name is required.";
     }
+    if (!signUpFormData.mobileNo) {
+      errors.mobileNo = "Mobile Number is required";
+    }
+    if (!signUpFormData.profilePic) {
+      errors.profilePic = "User Image is required";
+    }
     if (!signUpFormData.email) {
       errors.email = "email is required.";
     } else if (!emailRegex.test(signUpFormData.email)) {
@@ -73,26 +88,34 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
     const isFormValid = validateForm();
     if (isFormValid) {
       try {
-        const data = {
-          firstName: signUpFormData.firstName,
-          lastName: signUpFormData.lastName,
-          email: signUpFormData.email,
-          password: signUpFormData.password,
-        };
-        const response = await axios.post(
-          `${serverUrl}/register`,
-          data
-        );
-
+        const formData = new FormData();
+        formData.append("firstName", signUpFormData.firstName)
+        formData.append("lastName", signUpFormData.lastName)
+        formData.append("email", signUpFormData.email)
+        formData.append("password", signUpFormData.password)
+        formData.append("mobileNo", signUpFormData.mobileNo)
+        formData.append("profilePic", signUpFormData.profilePic)
+        // const data = {
+        //   firstName: signUpFormData.firstName,
+        //   lastName: signUpFormData.lastName,
+        //   email: signUpFormData.email,
+        //   password: signUpFormData.password,
+        // };
+        const response = await axios.post(`${serverUrl}/register`, formData);
         if (response.data.success) {
           localStorage.setItem("token", response.data.token);
           console.log("Signup successful!", response.data);
           propsAsAction({
-            logInPageAppearance: false,
-            data: null,
-            showLogInPage: true,
+            isUserLoggedIn: true,
           });
-          setLogInWatcher(false);
+          setSignUpFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            mobileNo: "",
+            profilePic: "",
+          });
         } else {
           console.log(response.data.message);
           setFormErrors({
@@ -107,16 +130,10 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
 
   const handleCloseSignupPage = () => {
     setShowLogInForm(false);
-    propsAsAction({
-      logInPageAppearance: false, ///// CLOSING LOG IN FORM IN HEADER CALL
-      data: null,
-      showLogInPage: null,
-    });
   };
 
   return (
-    // <div className="body">
-    <form>
+    <form className="signUpBody">
       <div className="signUpForm">
         <h3>Registration</h3>
         <span onClick={handleCloseSignupPage} className="cross_btn">
@@ -188,6 +205,35 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
               one lowercase letter, one number, and one special character.
             </span>
           )}
+        <span className="form_user_name">
+          <span>
+            <h6>Mobile Number</h6>
+            <input
+              type="Number"
+              placeholder="Enter Your Mobile Number"
+              onChange={handleOnChange}
+              value={signUpFormData.mobileNo}
+              name="mobileNo"
+            />
+            {formErrors.mobileNo && (
+              <p className="error">{formErrors.mobileNo}</p>
+            )}
+          </span>
+          <span>
+            <h6>Profile Picture</h6>
+            <input
+              type="file"
+              style={{ width: "150px", height: "10px" }}
+              onChange={handleFileChange}
+              accept="image/*"
+              required
+              name="Car_Image"
+            />
+            {formErrors.profilePic && (
+              <p className="error">{formErrors.profilePic}</p>
+            )}
+          </span>
+        </span>
         <button className="form_logInBtn" onClick={handleSignUpSubmit}>
           SignUp
         </button>
@@ -195,15 +241,9 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm ,setLogInWatcher }) => {
           Already have an account?{" "}
           <button onClick={() => setSignUpForm(false)}>LogIn</button>
         </span>
-        {/* <div className="signUpSection">
-          <button className="googleSignUp">
-            <FcGoogle />
-            Continue With Google
-          </button>
-        </div> */}
+        <LogInBtn />
       </div>
     </form>
-    // </div>
   );
 };
 

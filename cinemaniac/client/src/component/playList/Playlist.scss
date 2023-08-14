@@ -9,11 +9,11 @@
     z-index: 99;
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.8);
+    // background: rgba(255, 255, 255, 0.8);
     .playlistbody {
       height: 500px;
       width: 400px;
-      background-color: rgba(121, 179, 199, 0.538);
+      background-color: rgb(121, 179, 199);
       border-radius: 5px;
       margin: 0 auto;
       display: flex;

@@ -1,32 +1,33 @@
 // models/authentication.js
-const mongoose = require('mongoose');
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const authenticationSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String },
+  mobileNo: {type : Number},
+  profilePic: {  type: String },
   playlists: [
     {
       name: { type: String, required: true },
     },
   ],
+  // profilePic: {  imgUrl: String,  imgPublic_Id: String, },
 });
 
-authenticationSchema.methods['generateAuthToken'] = async function(){
+authenticationSchema.methods["generateAuthToken"] = async function () {
   try {
-    const token = jwt.sign({_id:this._id},JWT_SECRET_KEY);
+    const token = jwt.sign({ _id: this._id }, JWT_SECRET_KEY);
     return token;
-  }
-  catch(error){
+  } catch (error) {
     res.send("error", error);
-    console.log("error in token", error)
+    console.log("error in token", error);
   }
-}
+};
 
-
-const User = mongoose.model('User', authenticationSchema);
+const User = mongoose.model("User", authenticationSchema);
 module.exports = User;
