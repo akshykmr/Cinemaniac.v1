@@ -15,62 +15,179 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      border: 1px dotted white;
-      background-color: rgba(203, 199, 199, 0.636);
+      border-bottom: 1px dotted white;
+      // background-color: rgba(203, 199, 199, 0.636);
       cursor: pointer;
       height: 100%;
-      width: 20%;
+      width: 5%;
       color: rgb(255, 255, 255);
       &:active {
-        background-color: rgba(38, 38, 38, 0.862);
-        color: white;
+        color: rgb(6, 255, 73);
+      }
+      &:hover{
+        color: #dfa909;
       }
     }
-    .search_box {
-      height: 100%;
-      width: 60%;
-      border-radius: 30px;
+    .form__group {
       position: relative;
+      padding: 20px 0 0;
+      width: 100%;
+      max-width: 30%;
+    }
+    
+    .form__field {
+      font-family: inherit;
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #9b9b9b;
+      outline: 0;
+      font-size: 17px;
+      color: #fff;
+      padding: 7px 0;
+      background: transparent;
+      transition: border-color 0.2s;
+    }
+    
+    .form__field::placeholder {
+      color: transparent;
+    }
+    
+    .form__field:placeholder-shown ~ .form__label {
+      font-size: 17px;
+      cursor: text;
+      top: 20px;
+    }
+    
+    .form__label {
+      position: absolute;
+      top: 0;
+      display: block;
+      transition: 0.2s;
+      font-size: 17px;
+      color: #9b9b9b;
+      pointer-events: none;
+    }
+    
+    .form__field:focus {
+      padding-bottom: 6px;
+      font-weight: 700;
+      border-width: 3px;
+      border-image: linear-gradient(to right, #116399, #38caef);
+      border-image-slice: 1;
+    }
+    
+    .form__field:focus ~ .form__label {
+      position: absolute;
+      top: 0;
+      display: block;
+      transition: 0.2s;
+      font-size: 17px;
+      color: #38caef;
+      font-weight: 700;
+    }
+    
+    /* reset input */
+    .form__field:required, .form__field:invalid {
+      box-shadow: none;
+    }
+    .cards {
       display: flex;
-      justify-content: end;
-      input {
-        height: 100%;
-        width: 60%;
-        border-radius: 30px;
-        border: 1px solid rgb(0, 0, 0);
-        background-color: rgb(255, 255, 255);
-        color: rgb(0, 0, 0);
-        font-size: 20px;
-        font-weight: 500;
-        padding-left: 15px;
-      }
-      .search_results {
-        position: absolute;
-        top: 40px;
-        right: 10px;
-        max-height: 200px;
-        overflow-y: auto;
-        width: 58%;
-        background-color: rgba(255, 255, 255);
-        // border-radius: 30px;
-        border: 1px solid white;
-        color: rgb(0, 0, 0);
-        font-size: 18px;
-        padding: 5px;
-        .search_result_item {
-          padding: 10px;
-          &:hover {
-            background-color: rgb(112, 112, 112);
-            cursor: pointer;
-            border-radius: 30px;
-            &:active{
-              background-color: green;
-              color: rgb(255, 255, 255);
-            }
-          }
-        }
+      flex-direction: column;
+      gap: 5px;
+      align-items: flex-end;
+    }
+    
+    .cards .red {
+      background-color: #f43f5e;
+    }
+    
+    .cards .blue {
+      background-color: #3b82f6;
+    }
+    
+    .cards .green {
+      background-color: #22c55e;
+    }
+    
+    .cards .card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      height: 40px;
+      width:60%;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: 400ms;
+      &:active{
+        background-color: #333;
       }
     }
+    
+    .cards .card p.tip {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    
+    .cards .card p.second-text {
+      font-size: 10px;
+    }
+    
+    .cards .card:hover {
+      transform: scale(1.1, 1.1);
+    }
+    
+    .cards:hover > .card:not(:hover) {
+      filter: blur(1px);
+      transform: scale(0.9, 0.9);
+    }
+    // .search_box {
+    //   height: 100%;
+    //   width: 60%;
+    //   border-radius: 30px;
+    //   position: relative;
+    //   display: flex;
+    //   justify-content: flex-end;
+    //   input{
+    //     height: 100%;
+    //     width: 60%;
+    //     border-radius: 30px;
+    //     border: 1px solid rgb(0, 0, 0);
+    //     background-color: rgb(255, 255, 255);
+    //     color: rgb(0, 0, 0);
+    //     font-size: 20px;
+    //     font-weight: 500;
+    //     padding-left: 15px;
+    //   }
+    //   .search_results {
+    //     position: absolute;
+    //     top: 40px;
+    //     right: 10px;
+    //     max-height: 200px;
+    //     overflow-y: auto;
+    //     width: 58%;
+    //     background-color: rgba(255, 255, 255);
+    //     // border-radius: 30px;
+    //     border: 1px solid white;
+    //     color: rgb(0, 0, 0);
+    //     font-size: 18px;
+    //     padding: 5px;
+    //     .search_result_item {
+    //       padding: 10px;
+    //       &:hover {
+    //         background-color: rgb(112, 112, 112);
+    //         cursor: pointer;
+    //         border-radius: 30px;
+    //         &:active{
+    //           background-color: green;
+    //           color: rgb(255, 255, 255);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
   .content_box {
     margin-top: 40px;
@@ -193,7 +310,9 @@
     flex-direction: column;
     // justify-content: center;
     align-items: center;
-    background-color: rgba(50, 49, 53, 0.537);
+    // background-color: rgba(50, 49, 53, 0.537);
+    background-color: #12263fad;
+    border: 1px solid #2a486b;
     border-radius: 20px;
     h1 {
       display: flex;
@@ -209,7 +328,7 @@
       flex-direction: row;
       gap: 50px;
       button {
-        width: 250px;
+        width: 180px;
         height: 40px;
         font-size: 22px;
         margin-top: 70px;
@@ -223,7 +342,7 @@
 }
 @keyframes cartSlideWindow {
   0% {
-    transform: translateX(200%);
+    transform: translateX(100%);
   }
   100% {
     transform: translateX(0);

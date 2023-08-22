@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import "./Header.scss";
@@ -6,11 +7,14 @@ import AppContext from "./../context/AppContext";
 import Playlist from "../playList/Playlist";
 // import { useAuth0 } from "@auth0/auth0-react";
 // import ForgotPass from "../forgotPass/ForgotPass";
-import Profile from './../profile/Profile'
+import Profile from './../profile/Profile';
+import LogInBtn from './logInBtn/logInBtn'
+import Logo from './logo/Logo'
 
 import axios from "axios";
 
 const Header = () => {
+
   const serverUrl = process.env.REACT_APP_BASE_URL;
 
   let token = localStorage.getItem("token");
@@ -24,7 +28,7 @@ const Header = () => {
 
   const [showLogInform, setShowLogInForm] = useState(false);
 
-  const [showProfile, setShowProfile] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
 
   const [userData, setUserData] = useState();
 
@@ -37,13 +41,13 @@ const Header = () => {
   }, [actionToPerform]);
   
 
-  const handleLogInPageAppearance = () => {
-    setShowLogInForm(true);
-  };
+  // const handleLogInPageAppearance = () => {
+  //   setShowLogInForm(true);
+  // };
 
   const handleDisplayPlayList = () => {
-    setDisplayPlayList(true);
     handleGetData();
+    setDisplayPlayList(true);
   };
 
   const handleGetData = async () => {
@@ -56,14 +60,14 @@ const Header = () => {
       if (response.data.success) {
         setShowLogInForm(false);
         setUserData(response.data.data);
-        localStorage.setItem('userImg',response.data.data.profilePic);
+        console.log("data",response.data.data)
+        localStorage.setItem('loggedInWithGoogle',response.data.data.loggedInWithGoogle);
+        // console.log("last mov",response.data.data.playlist[Playlist.length - 1].name);
+        localStorage.setItem("movies", response.data.data.playlist[Playlist.length - 1]?.name);
         propsAsAction({
-          userData : response.data.data
+          userData : response.data.data,
+          showSearchpage: true
         })
-        propsAsAction({
-          data: response.data.data,
-          isLoggedin: true,
-        });
         setIsUserLoggedIn(true);
       } else {
         console.log(response.data.message);
@@ -75,12 +79,14 @@ const Header = () => {
 
   useEffect(() => {
     if (actionToPerform.isUserLoggedIn === true) {
+    console.log("after log in")
       handleGetData();
     }
   }, [actionToPerform]);
 
   useEffect(() => {
     if (token) {
+    console.log("token")
       handleGetData();
     } else {
       console.log("token expired");
@@ -91,6 +97,7 @@ const Header = () => {
     propsAsAction({
       data: null,
       isUserLoggedIn: false,
+      showSearchpage: false
     });
     setUserData("");
     setIsUserLoggedIn(false);
@@ -113,13 +120,15 @@ const Header = () => {
         <div className="header_items">
           {/* <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}></button> */}
 
-          <div className="logo">Cinemaniac</div>
+          {/* <div className="logo">Cinemaniac</div> */}
+          <Logo/>
           {/* <button onClick={() => loginWithRedirect()}>Log In</button>; */}
           {!isUserLoggedIn ? (
             !showLogInform ? (
-              <button onClick={handleLogInPageAppearance} className="logInBtn">
-                LogIn
-              </button>
+              // <button onClick={handleLogInPageAppearance} className="logInBtn">
+              //   LogIn
+              // </button>
+              <LogInBtn  setShowLogInForm={setShowLogInForm}/>
             ) : (
               ""
             )

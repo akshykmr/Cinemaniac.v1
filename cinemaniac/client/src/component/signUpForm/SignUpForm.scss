@@ -10,116 +10,129 @@
 //   display: flex;
 //   align-items: center;
 //   background: rgba(167, 166, 166, 0.601);
-  form {
-    height: 500px;
-    width: 400px;
-    background-color: rgba(121, 179, 199, 0.538);
-    // border: 0.01px solid white;
-    border-radius: 5px;
+form {
+  height: 500px;
+  width: 400px;
+  background-color: rgba(121, 179, 199, 0.538);
+  // border: 0.01px solid white;
+  border-radius: 5px;
+  margin: 0 auto;
+  display: flex;
+  padding: 10px;
+
+  .signUpForm {
+    width: 90%;
+    height: 90%;
     margin: 0 auto;
     display: flex;
-    padding: 10px;
-    
-    .signUpForm {
-      width: 90%;
-      height: 90%;
-      margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    h3 {
+      text-transform: uppercase;
+    }
+    .cross_btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      &:hover {
+        color: rgb(183, 112, 112);
+      }
+      &:active {
+        color: red;
+      }
+    }
+    .form_user_name,
+    .form_user_password {
+      width: 100%;
+      position: relative;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      h3 {
-        text-transform: uppercase;
-      }
-      .cross_btn{
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        cursor: pointer;
-        &:hover{
-          color: rgb(183, 112, 112);
+      flex-direction: row;
+      height: 80px;
+      margin-left: -10px;
+      margin-top: -10px;
+      gap: 20px;
+      span {
+        h6 {
+          text-transform: uppercase;
+          font-size: 12px;
+          margin: 5px;
+          font-weight: 600;
         }
-        &:active{
+        input {
+          width: 93%;
+          height: 5px;
+          padding: 10px;
+          font-size: 12px;
+          background-color: #2a486b;
+          border: 1px solid  #4d80b9;
+          color: white;
+          border-radius: 10px;
+        }
+        p {
+          font-size: 12px;
           color: red;
+          margin-top: 5px;
+          margin-left: 5px;
+        }
+        .password_hider {
+          position: absolute;
+          top: 10%;
+          right: 3%;
+          font-size: 15px;
+          cursor: pointer;
         }
       }
-      .form_user_name,
-      .form_user_password {
-        width: 100%;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        height: 80px;
-        margin-left: -10px;
-        margin-top: -10px;
-        gap: 20px;
-        span {
-          h6 {
-            text-transform: uppercase;
-            font-size: 12px;
-            margin: 5px;
-            font-weight: 600;
-          }
-          input {
-            width: 90%;
-            height: 5px;
-            padding: 10px;
-            font-size: 12px;
-          }
-          p{
-            font-size: 12px;
-            color: red;
-            margin-top: 5px;
-            margin-left: 5px;
-          }
-          .password_hider {
-            position: absolute;
-            top: 10%;
-            right: 3%;
-            font-size: 15px;
-            cursor: pointer;
-          }
-        }
-      }
-      .warnig_msg{
-        font-size: 12px;
-        margin-top: -15px;
-        color: yellow;
-      }
-      .form_logInBtn {
+    }
+    .warnig_msg {
+      font-size: 12px;
+      margin-top: -15px;
+      color: yellow;
+    }
+    .form_logInBtn {
+        margin-bottom: 10px;
         width: 80px;
         height: 30px;
-        background-color: rgba(91, 91, 172, 0.844);
+        background-color: #174f90;
+        border: 3px solid #2a486b;
         color: white;
         border-radius: 10px;
         cursor: pointer;
-      }
-      .togglebtn {
-        color: black;
-        font-size: 15px;
-        button {
-          border: 0;
-          background-color: transparent;
-          color: blue;
-          text-decoration: underline;
-          margin-bottom: 20px;
-          cursor: pointer;
-          &:active {
-            color: black;
-          }
+        &:hover {
+          background-color: #2c7be5;
+        }
+        &:active{
+          background-color: green;
+        }
+    }
+    .togglebtn {
+      color: rgb(255, 255, 255);
+      font-size: 15px;
+      button {
+        border: 0;
+        background-color: transparent;
+        color: rgba(132, 132, 132, 0.994);
+        text-decoration: underline;
+        margin-bottom: 20px;
+        cursor: pointer;
+        &:active {
+          color: rgb(255, 255, 255);
+
         }
       }
-      .googleSignUp {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 30px;
-        flex-direction: row;
-        gap: 10px;
-        border-radius: 30px;
-        padding: 5px;
-        cursor: pointer;
-      }
+    }
+    .googleSignUp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      flex-direction: row;
+      gap: 10px;
+      border-radius: 30px;
+      padding: 5px;
+      cursor: pointer;
     }
   }
+}
 // }

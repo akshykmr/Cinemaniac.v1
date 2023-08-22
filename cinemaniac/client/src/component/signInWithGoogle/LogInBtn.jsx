@@ -12,6 +12,7 @@ export const LogInBtn = () => {
 
 
   const handleSuccess = async (response) => {
+    console.log("google log in success")
     try {
       if (response) {
         const res = await axios.get(
@@ -31,7 +32,6 @@ export const LogInBtn = () => {
         };
         try {
           const response = await axios.post(`${serverUrl}/googlelogin`, data);
-  
           if (response.data.success) {
             localStorage.setItem("token", response.data.token);
             propsAsAction({

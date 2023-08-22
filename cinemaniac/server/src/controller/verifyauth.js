@@ -15,6 +15,7 @@ const verifyToken = async (req, res, next) => {
     res.status(401).json({ success: false, message: 'Invalid token' });
   }
 };
+module.exports = { verifyToken };
 
 // const verifyToken = async (req, res, next) => {
 //   try {
@@ -167,7 +168,6 @@ const verifyToken = async (req, res, next) => {
 //   }
 // };
 
-module.exports = { verifyToken };
 
 // const logInUser = async (req, res) => {
 //   try {

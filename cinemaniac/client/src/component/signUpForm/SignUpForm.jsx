@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { RiCloseCircleLine } from "react-icons/ri";
 import "./SignUpForm.scss";
-import axios from "axios";
 import AppContext from "../context/AppContext";
 import { LogInBtn } from "../signInWithGoogle/LogInBtn";
 
@@ -40,7 +39,7 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
     setSignUpFormData({ ...signUpFormData, profilePic: event.target.files[0] });
     console.log(event.target.files[0]);
   };
-  console.log("signUpFormData", signUpFormData);
+  // console.log("signUpFormData", signUpFormData);
 
   const handlepasswordPreviewer = () => {
     setPreviewpassword((prevUser) => !prevUser);
@@ -100,11 +99,17 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
         //   lastName: signUpFormData.lastName,
         //   email: signUpFormData.email,
         //   password: signUpFormData.password,
+        //   mobileNo: signUpFormData.mobileNo,
+        //   profilePic : signUpFormData.profilePic,
         // };
-        const response = await axios.post(`${serverUrl}/register`, formData);
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.token);
-          console.log("Signup successful!", response.data);
+        const response = await fetch(`${serverUrl}/register`,{
+          method: 'POST',
+          body: formData,
+        });
+        const responseData = await response.json();
+        if (responseData.success) {
+          localStorage.setItem("token", responseData.token);
+          console.log("Signup successful!", responseData);
           propsAsAction({
             isUserLoggedIn: true,
           });
@@ -117,10 +122,17 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
             profilePic: "",
           });
         } else {
-          console.log(response.data.message);
-          setFormErrors({
-            email: response.data.message,
-          });
+          // console.log(responseData.message);
+          if(responseData.action === "email"){
+            setFormErrors({
+              email: responseData.message,
+            });
+          } else {
+            setFormErrors({
+              mobileNo: responseData.message,
+            });
+          }
+          
         }
       } catch (error) {
         console.error("Error:", error);
@@ -180,6 +192,8 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
             />
             {formErrors.email && <p className="error">{formErrors.email}</p>}
           </span>
+
+          
           <span>
             <h6>password</h6>
             <input
@@ -209,7 +223,7 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
           <span>
             <h6>Mobile Number</h6>
             <input
-              type="Number"
+              type="text"
               placeholder="Enter Your Mobile Number"
               onChange={handleOnChange}
               value={signUpFormData.mobileNo}
@@ -223,7 +237,7 @@ const SignUpForm = ({ setShowLogInForm, setSignUpForm }) => {
             <h6>Profile Picture</h6>
             <input
               type="file"
-              style={{ width: "150px", height: "10px" }}
+              style={{ width: "150px", height: "10px" ,backgroundColor:"transparent", border:"0px" }}
               onChange={handleFileChange}
               accept="image/*"
               required

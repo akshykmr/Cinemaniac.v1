@@ -13,7 +13,6 @@ function App() {
   const propsAsAction =(result)=>{
     setActionToPerform(result);
   }
-
   return (
     <AppContext.Provider value={{propsAsAction, actionToPerform}}>
     <Header/>

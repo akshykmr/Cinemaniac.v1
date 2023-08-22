@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { RiCloseCircleLine } from "react-icons/ri";
 import "./LogInForm.scss";
@@ -109,7 +109,7 @@ const LogInForm = ({ setShowLogInForm }) => {
   };
 
   return (
-    <div className="body">
+    <div className="logInbody">
       {!showSignUpForm ? (
         <form>
           <div className="logInForm">

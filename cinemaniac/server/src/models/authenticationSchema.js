@@ -9,14 +9,14 @@ const authenticationSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String },
-  mobileNo: {type : Number},
-  profilePic: {  type: String },
+  mobileNo: { type: Number },
+  profilePic: { imgUrl: String, imgPublic_Id: String },
   playlists: [
     {
       name: { type: String, required: true },
     },
   ],
-  // profilePic: {  imgUrl: String,  imgPublic_Id: String, },
+  loggedInWithGoogle : { type : Boolean }
 });
 
 authenticationSchema.methods["generateAuthToken"] = async function () {

@@ -6,6 +6,9 @@ import { BiTimeFive } from "react-icons/bi";
 import { CgCalendarDates } from "react-icons/cg";
 import AppContext from "./../context/AppContext";
 import axios from "axios";
+import SearchBtn from "./../external_components/search_btn/Search_btn";
+import WelcomeTxt from "./../external_components/welcome_txt/WelcomeTxt";
+import LogInBtn from "./../external_components/logIn_btn/LogInBtn";
 
 const HomePage = () => {
   const omdbBaseUrl = `${process.env.REACT_APP_OMDB_BASE_URL}?apikey=${process.env.REACT_APP_OMDB_API_KEY}`;
@@ -15,8 +18,7 @@ const HomePage = () => {
   const token = localStorage.getItem("token");
   const movie = localStorage.getItem("movies");
 
-
-  const { propsAsAction, actionToPerform } = React.useContext(AppContext);
+  const { actionToPerform } = React.useContext(AppContext);
 
   const [playlist, setPlayList] = useState(false);
 
@@ -32,13 +34,24 @@ const HomePage = () => {
 
   const [moviesData, setMoviesData] = useState();
 
+
+  useEffect(() => {
+    if (actionToPerform.showSearchpage === true) {
+      setWelcomeScreen(false);
+    } else if(actionToPerform.showSearchpage === false){
+      setWelcomeScreen(true);
+    }
+  }, [actionToPerform]);
+
+
+ 
+
   const handleAddToPlaylist = async (movieName) => {
     try {
       const headers = { Authorization: `Bearer ${token}` };
       console.log("token", headers);
       const formData = new FormData();
       formData.append("movieName", movieName);
-
       const response = await axios.put(
         `${serverUrl}/update`,
         { movieName },
@@ -59,12 +72,12 @@ const HomePage = () => {
     }
   };
 
-  const handleLogInAppearance = () => {
-    //// THIS WILL TRIGGER THE LOG IN PAGE AND LOG IN / SIGNUP PAGE WILL APPEAR ON  HOMEPAGE
-    propsAsAction({
-      logInPageAppearance: true,
-    });
-  };
+  // const handleLogInAppearance = () => {
+  //   //// THIS WILL TRIGGER THE LOG IN PAGE AND LOG IN / SIGNUP PAGE WILL APPEAR ON  HOMEPAGE
+  //   propsAsAction({
+  //     logInPageAppearance: true,
+  //   });
+  // };
 
   const handleSearch = () => {
     if (searchTerm.length >= 4) {
@@ -118,30 +131,37 @@ const HomePage = () => {
   useEffect(() => {
     if (actionToPerform.isLoggedin) {
       setWelcomeScreen(false);
-    } else if (!actionToPerform.isLoggedin) {
-      setWelcomeScreen(true);
-    }
+    } 
   }, [actionToPerform]);
 
-
-  useEffect(()=>{
-    if(movie){
-      handleMovieSelect(movie)
+  useEffect(() => {
+    if (movie !== "Undefined" && movie !== "null") {
+      handleMovieSelect(movie);
+      console.log("movie", movie)
     }
-  },[])
+  }, [movie]);
 
+  
+  useEffect(() => {
+    if (actionToPerform.playlistMovie ) {
+      handleMovieSelect(actionToPerform.playlistMovie);
+    }
+  }, [actionToPerform]);
 
   return (
     <div className="homePage_body">
       {welcomeScreen ? (
         <div className="welcome_screen">
-          <h1>Welcome To Cinemaniac</h1>
+          {/* <h1>Welcome To Cinemaniac</h1> */}
+          <WelcomeTxt />
           <div className="screen_btn">
-            <button onClick={() => setWelcomeScreen(false)}>
+            {/* <button onClick={() => setWelcomeScreen(false)}>
               Search Movies
-            </button>
-            {!actionToPerform.isLoggedin && (
-              <button onClick={handleLogInAppearance}>LogIn</button>
+            </button> */}
+            <SearchBtn setWelcomeScreen={setWelcomeScreen} />
+            {!token && (
+              <LogInBtn />
+              // <button onClick={handleLogInAppearance}>LogIn</button>
             )}
           </div>
         </div>
@@ -149,9 +169,44 @@ const HomePage = () => {
         <>
           <div className="search_bar">
             <span className="back_btn" onClick={() => setWelcomeScreen(true)}>
-              <BsArrowLeftSquare /> Back to Home Screen
+              <BsArrowLeftSquare /> Back
             </span>
-            <span className="search_box">
+            <div class="form__group field">
+              <input
+                type="text"
+                class="form__field"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search Movies "
+                required=""
+              />
+              <label for="name" class="form__label">
+                Search Movies
+              </label>
+              <div className="cards">
+                {searchResults.length > 0 ? (
+                  searchResults.map((movie, index) => (
+                    <div
+                      key={movie.imdbID}
+                      className={`card ${
+                        index % 3 === 0
+                          ? "red"
+                          : index % 3 === 1
+                          ? "blue"
+                          : "green"
+                      }`}
+                      onClick={() => handleMovieSelect(movie.Title)}
+                    >
+                      <p className="tip">
+                        {movie.Title} ({movie.Year})
+                      </p>
+                    </div>
+                  ))
+                ) : (
+""                )}
+              </div>
+            </div>
+            {/* <span className="search_box">
               <input
                 type="text"
                 placeholder="Search Movies here"
@@ -171,9 +226,9 @@ const HomePage = () => {
                   ))}
                 </div>
               )}
-            </span>
+            </span> */}
           </div>
-          <div className="content_box">
+          <div className="content_box" style={!moviesData ? { backgroundColor: "rgba(18, 38, 63, 0.6784313725)" } : {}}>
             {loading ? (
               <div className="blank_skaleton">
                 <h1>Empty Results</h1>
@@ -195,7 +250,7 @@ const HomePage = () => {
                   <div className="imagebox">
                     <img src={moviesData?.Poster} alt="" />
                   </div>
-                  {actionToPerform.isLoggedin && (
+                  {token && (
                     <div className="add_to_playlist_btn">
                       <button
                         onClick={() => handleAddToPlaylist(moviesData?.Title)}
