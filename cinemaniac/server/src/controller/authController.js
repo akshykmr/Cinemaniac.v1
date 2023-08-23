@@ -191,8 +191,6 @@ const dataTransmitter = async (req, res) => {
 };
 
 
-
-
 const updateData = async (req, res) => {
   try {
     console.log("1");

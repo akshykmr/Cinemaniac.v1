@@ -1,3 +1,5 @@
+@import "./../../css-config//mixins.scss";
+
 .playListbody {
   height: calc(100vh - 62px);
   position: fixed;
@@ -12,7 +14,7 @@
   background: #12263fdc;
   .playlistbody {
     height: 500px;
-    width: 400px;
+    width: 350px;
     background-color: #12263f;
     border: 1px solid #2a486b;
     color: white;
@@ -23,6 +25,9 @@
     transform: translateX(100%);
     animation: cartSlideWindow 0.9s ease;
     animation-fill-mode: forwards;
+    @include md{
+      width: 400px;
+    }
     .crs_btn_cont {
       width: 90%;
       height: 90%;

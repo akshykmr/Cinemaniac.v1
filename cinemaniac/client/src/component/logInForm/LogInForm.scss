@@ -1,9 +1,11 @@
+@import "./../../css-config//mixins.scss";
+
 .logInbody {
   height: calc(100vh - 62px);
   position: fixed;
   top: 62px;
-  left: 0;
   width: 100%;
+  left: 0;
   display: flex;
   justify-content: flex-end;
   z-index: 99;
@@ -12,7 +14,7 @@
   color: white;
   form {
     height: 500px;
-    width: 400px;
+    width: 350px;
     background-color: #12263f;
       border: 1px solid #2a486b;
     border-radius: 5px;
@@ -22,6 +24,9 @@
     transform: translateX(100%);
     animation: cartSlideWindow 0.9s ease ;
     animation-fill-mode: forwards; 
+    @include md{
+      width: 400px;
+    }
     .logInForm {
       width: 90%;
       height: 90%;

@@ -9,6 +9,7 @@ import axios from "axios";
 import SearchBtn from "./../external_components/search_btn/Search_btn";
 import WelcomeTxt from "./../external_components/welcome_txt/WelcomeTxt";
 import LogInBtn from "./../external_components/logIn_btn/LogInBtn";
+import Loader from './../external_components/loader/Loader'
 
 const HomePage = () => {
   const omdbBaseUrl = `${process.env.REACT_APP_OMDB_BASE_URL}?apikey=${process.env.REACT_APP_OMDB_API_KEY}`;
@@ -232,6 +233,9 @@ const HomePage = () => {
             {loading ? (
               <div className="blank_skaleton">
                 <h1>Empty Results</h1>
+                <div className="loader">
+                  <Loader/>
+                </div>
                 <div className="hourglassBackground">
                   <div className="hourglassContainer">
                     <div className="hourglassCurves"></div>
@@ -281,8 +285,7 @@ const HomePage = () => {
                   </ul>
                   <p>{moviesData?.Plot}</p>
                   <ul>
-                    <li>Actors : {moviesData?.Actors}</li>
-                    <li>Type : {moviesData?.Type}</li>
+                    <li style={{width:"100%"}}>Actors : {moviesData?.Actors}</li>
                   </ul>
                   <ul>
                     <li>Language : {moviesData?.Language}</li>

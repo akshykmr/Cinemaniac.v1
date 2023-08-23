@@ -1,3 +1,5 @@
+@import "./../../css-config//mixins.scss";
+
 section {
   height: calc(100vh - 62px);
   position: fixed;
@@ -12,7 +14,7 @@ section {
   background: #12263fdc;
   .container {
     height: 500px;
-    width: 400px;
+    width: 350px;
     background-color: #12263f;
     border-radius: 5px;
     border: 1px solid #2a486b;
@@ -22,6 +24,9 @@ section {
     transform: translateX(100%);
     animation: cartSlideWindow 0.9s ease;
     animation-fill-mode: forwards;
+    @include md{
+      width: 400px;
+    }
     .row {
       display: flex;
       flex-direction: column;

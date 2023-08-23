@@ -1,25 +1,17 @@
-// .body {
-//   height: calc(100vh - 62px);
-//   position: fixed;
-//   top: 62px;
-//   left: 0;
-//   width: 100%;
-//   display: flex;
-//   justify-content: flex-end;
-//   z-index: 99;
-//   display: flex;
-//   align-items: center;
-//   background: rgba(167, 166, 166, 0.601);
+@import "./../../css-config//mixins.scss";
+
 form {
   height: 500px;
-  width: 400px;
+  width: 350px;
   background-color: rgba(121, 179, 199, 0.538);
   // border: 0.01px solid white;
   border-radius: 5px;
   margin: 0 auto;
   display: flex;
   padding: 10px;
-
+  @include md{
+    width: 400px;
+  }
   .signUpForm {
     width: 90%;
     height: 90%;
